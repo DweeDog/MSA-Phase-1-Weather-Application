@@ -8,11 +8,23 @@ const API_KEY = "767ed9a7dc1512091fb873a8e77ca1f4";
 //const API_URL = "http://api.openweathermap.org/data/2.5/weather?q=${city},${country}&appid=${API_KEY}&units=metric";
 
 class App extends React.Component {
+
+  // //dont ever directly manipulate the state..
+  state = {
+    temperature: undefined, 
+    city: undefined,
+    country: undefined,
+    humidity: undefined,
+    description: undefined,
+    error: undefined
+  }
+
   //render displays the data within the components returns JSX
   //purpose of the react is to have smaller components which are in one big file which is exported into an html element
 
   //creating a function to get the weather from the API
   getWeather = async (e) => {
+
 
     e.preventDefault();
     
@@ -26,9 +38,33 @@ class App extends React.Component {
     //convert the resposne to the API call to a JSON format
     const data = await api_call.json();
 
+    if (city && country ) {
     //log the file
-    console.log(data);
+        console.log(data);
+
+        // //setting the states
+        this.setState({
+          temperature: data.main.temp, 
+          city: data.name,
+          country: data.sys.country,
+          humidity: data.main.humidity,
+          description: data.weather[0].description,
+          error: ""
+
+        });
+      
+    } else {
+      this.setState({
+        temperature: undefined, 
+        city: undefined,
+        country: undefined,
+        humidity: undefined,
+        description: undefined,
+        error: "Please Enter the Values"
+    });
   }
+
+}
 
 
 
@@ -38,7 +74,15 @@ class App extends React.Component {
 
       <Titles />
       <Form getWeather={this.getWeather}/>
-      <Weather />
+      <Weather 
+        temperature={this.state.temperature}
+        city={this.state.city}
+        country={this.state.country}
+        humidity={this.state.humidity}
+        description={this.state.description}
+        error={this.state.error}
+
+        />
 
             
       </div>
